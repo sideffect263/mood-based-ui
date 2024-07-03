@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import SleepyLayout from './components/SleepyLayout';
+import RelaxedLayout from './components/RelaxedLayout';
+import AnxiousLayout from './components/AnxiousLayout';
+import TransitionWrapper from './components/TransitionWrapper';
 import './App.css';
 
 function App() {
+  const [mood, setMood] = useState('relaxed');
+
+  const renderLayout = () => {
+    switch (mood) {
+      case 'sleepy':
+        return <SleepyLayout />;
+      case 'relaxed':
+        return <RelaxedLayout />;
+      case 'anxious':
+        return <AnxiousLayout />;
+      default:
+        return <RelaxedLayout />;
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <nav className="mood-nav">
+        <button onClick={() => setMood('sleepy')}>Sleepy</button>
+        <button onClick={() => setMood('relaxed')}>Relaxed</button>
+        <button onClick={() => setMood('anxious')}>Anxious</button>
+      </nav>
+      <TransitionWrapper locationKey={mood}>
+        {renderLayout()}
+      </TransitionWrapper>
     </div>
   );
 }

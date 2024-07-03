@@ -1,0 +1,59 @@
+/* AnxiousLayout.css */
+.anxious-container {
+  background-color: #f0f7ff;
+  min-height: 100vh;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.anxious-container header {
+  margin-bottom: 30px;
+}
+
+.anxious-container h1 {
+  font-size: 2em;
+  color: #2c3e50;
+}
+
+.calming-message {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.simple-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #2980b9;
+}
+
+footer {
+  margin-top: 40px;
+  font-style: italic;
+  color: #7f8c8d;
+}
