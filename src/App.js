@@ -242,14 +242,14 @@ function App() {
       {isLoading && (
         <motion.div 
           className="loading-indicator"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0.7 }}
+          animate={{ opacity: 0.5 }}
           exit={{ opacity: 0 }}
         >
           Predicting mood...
         </motion.div>
       )}
-      {error && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{error}</motion.p>}
+      {error && <motion.p style={{position:'absolute', opacity:0.3}} initial={{ opacity: 0 }} animate={{ opacity: 0.2 }}>{error}</motion.p>}
       <Categories 
         categories={categories} 
         selectedCategory={selectedCategory}

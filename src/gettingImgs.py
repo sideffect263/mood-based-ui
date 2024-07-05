@@ -1,48 +1,114 @@
 import requests
 from bs4 import BeautifulSoup
+import time
+import re
 
-def get_image_links(page_url, headers):
-    response = requests.get(page_url, headers=headers)
+def scrape_art_images(url, num_images=100):
+    headers = {'User-Agent': 'Your User Agent String'}
+    artworks = []
+    
+    response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
-    image_links = []
-    print(f'Getting images from {soup.prettify()}')
-    for img in soup.find_all('img'):
-        img_url = img.get('data-src') or img.get('src')
-        if img_url:
-            image_links.append(img_url)
-    return image_links
-
-# URL of the search page
-base_url = 'https://unsplash.com/s/photos/artwork'
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-}
-
-# List to store image links
-image_links = []
-
-# Loop through pages to get image links
-page = 1
-while len(image_links) < 100:
-    current_page = f"{base_url}{page}"
-    page_image_links = get_image_links(current_page, headers)
-    image_links.extend(page_image_links)
     
-    # Break if there are no more image links found
-    if len(page_image_links) == 0:
-        break
+    gallery = soup.find('ul', class_='gallery')
+    if gallery:
+        for i, li in enumerate(gallery.find_all('li', class_='gallerybox'), 1):
+            if i > num_images:
+                break
+            
+            artwork = {'id': i}
+            
+            # Find image
+            img = li.find('img')
+            if img and 'src' in img.attrs:
+                artwork['image'] = '' + img['src']
+            
+            # Find title
+            title_elem = li.find('div', class_='gallerytext')
+            if title_elem:
+                artwork['title'] = title_elem.get_text(strip=True)
+            
+            # Get more details from the file page
+            link = li.find('a', class_='galleryfilename')
+            if link:
+                file_url = 'https://commons.wikimedia.org' + link['href']
+                artwork.update(get_artwork_details(file_url, headers))
+            
+            artworks.append(artwork)
+            time.sleep(1)  # Be polite, wait between requests
     
-    # Go to the next page
-    page += 1
+    return artworks
 
-    # Ensure we only collect 100 links
-    if len(image_links) >= 100:
-        image_links = image_links[:100]
-        break
+def get_artwork_details(url, headers):
+    details = {'artist': '', 'category': ''}
+    
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Try to find artist
+    artist_elem = soup.find('td', string='Artist')
+    if artist_elem:
+        artist = artist_elem.find_next('td')
+        if artist:
+            details['artist'] = artist.get_text(strip=True)
+    
+    # Try to find category
+    for link in soup.find_all('a'):
+        if 'title' in link.attrs and link['title'].startswith('Category:'):
+            details['category'] = link['title'].split(':')[1]
+            break
+    
+    return details
 
-# Save the image links to a file
-with open('image_links.txt', 'w') as file:
-    for link in image_links:
-        file.write(f'{link}\n')
+# Example usage
+url = 'https://commons.wikimedia.org/wiki/Category:Paintings'
+artworks = scrape_art_images(url, num_images=10)
+for artwork in artworks:
+    print(artwork)
+    
+import re
 
-print('Saved 100 image links to image_links.txt')
+def clean_data(artworks):
+    cleaned_artworks = []
+    for artwork in artworks:
+        cleaned_artwork = {
+            'id': artwork['id'],
+            'title': clean_title(artwork['title']),
+            'artist': artwork['artist'] if artwork['artist'] else 'Unknown',
+            'category': artwork['category'],
+            'image': clean_image_url(artwork['image'])
+        }
+        cleaned_artworks.append(cleaned_artwork)
+    return cleaned_artworks
+
+def clean_title(title):
+    # Remove file extension and dimensions
+    title = re.sub(r'\.\w+$', '', title)  # Remove file extension
+    title = re.sub(r'\d+\s*×\s*\d+.*$', '', title)  # Remove dimensions
+    title = title.strip()
+    return title
+
+def clean_image_url(url):
+    # Remove the duplicate 'https:'
+    if url.startswith('https:https://'):
+        url = url[6:]
+    return url
+
+# Assuming your original data is in a variable called 'original_artworks'
+cleaned_artworks = clean_data(artworks)
+
+# Print the cleaned data
+import json
+print(json.dumps(cleaned_artworks, indent=2))
+
+
+
+# Save the data to a file
+
+import json
+
+with open('artworks.json', 'w') as file:
+    
+    json.dump(artworks, file, indent=2)
+    
+    

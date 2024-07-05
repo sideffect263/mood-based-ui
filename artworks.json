@@ -1,5 +1,3 @@
-// GalleryData.js
-export const artworks =
 [
   {
     "id": 1,
@@ -71,6 +69,4 @@ export const artworks =
     "artist": "",
     "category": "Paintings"
   }
-];
-  
-  export const categories = ['All', 'Post-Impressionism', 'Surrealism', 'Expressionism', 'Baroque', 'Ukiyo-e', 'Cubism'];
+]
