@@ -196,7 +196,7 @@ function App() {
       setError(null);
       try {
         console.log('Sending mouse data:', mouseData);
-        const response = await axios.post('https://me-predict-server.onrender.com//predict', mouseData);
+        const response = await axios.post('https://me-predict-server.onrender.com/predict', mouseData);
         console.log('Predicted mood:');
         console.log(response.data.condition);
         setMood(response.data.condition);
