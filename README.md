@@ -1,12 +1,16 @@
 # Mood-Based UI
 
 Mood-Based UI is a project that aims to create a user interface that adapts based on the user's mood. This project uses various techniques to detect mood and adjust the UI elements accordingly to enhance user experience.
+To understand how the backend works please go to - https://github.com/sideffect263/ME_Predict_server
+For the full backend server and ml algorithems
 
 ## Features
 
 - **Mood Detection**: Uses machine learning algorithms to detect user mood.
 - **Dynamic UI Adjustment**: Changes UI colors, themes, and layouts based on detected mood.
 - **Real-Time Updates**: UI updates in real-time as the user's mood changes.
+
+
 
 ## Installation
 
